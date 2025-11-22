@@ -15,11 +15,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-// CORS configuration - restrict to localhost for development
+// CORS configuration
 const corsOptions = {
-    origin: process.env.NODE_ENV === 'production' 
-        ? false // Disable CORS in production (custom apps don't use CORS)
-        : ['http://localhost:3000', 'http://127.0.0.1:3000'], // Allow localhost for dev
+    origin: process.env.CORS_ORIGIN 
+        ? process.env.CORS_ORIGIN.split(',') // Allow specific origins from env
+        : process.env.NODE_ENV === 'production' 
+            ? false // Disable CORS in production (custom apps don't use CORS)
+            : ['http://localhost:3000', 'http://127.0.0.1:3000'], // Allow localhost for dev
     credentials: true,
     optionsSuccessStatus: 200
 };

@@ -1,0 +1,42 @@
+# Files and directories to ignore during Netlify build
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Source files (only dist/ is needed)
+src/
+scripts/
+frontend/
+tests/
+
+# Build artifacts (except dist/)
+build/
+
+# Documentation (not needed for deployment)
+*.md
+!README.md
+
+# Development files
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Data-ops submodule (if not needed)
+data-ops/
+custom-app-sdk-js/
+stylesheet-generator/
+
+# TypeScript config (not needed for static deployment)
+tsconfig.json
+
+# Other build outputs
+coverage/
+.nyc_output/
+

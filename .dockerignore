@@ -1,0 +1,23 @@
+# Docker ignore file
+node_modules
+npm-debug.log
+dist
+build
+.git
+.gitignore
+.env
+.env.local
+*.md
+!README.md
+.vscode
+.idea
+coverage
+.nyc_output
+tests
+frontend
+scripts/build.js
+netlify
+.netlifyignore
+netlify.toml
+_redirects
+

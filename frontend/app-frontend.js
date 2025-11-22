@@ -135,7 +135,22 @@ const state = {
     isRunning: false,
     logs: [],
     output: [],
-    serverUrl: window.location.origin, // Adjust if server is on different port
+    serverUrl: (() => {
+        // Check for environment variable (set at build time or via Netlify)
+        if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL) {
+            return process.env.REACT_APP_API_URL;
+        }
+        // Check for window-level config (can be set via script tag in index.html)
+        if (window.APP_CONFIG && window.APP_CONFIG.API_URL) {
+            return window.APP_CONFIG.API_URL;
+        }
+        // Default to Railway backend URL for production
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            return 'https://kontent-data-ops-custom-app-production.up.railway.app';
+        }
+        // Development: use same origin
+        return window.location.origin;
+    })(),
     abortController: null, // For command cancellation
     progress: {
         current: 0,

@@ -101,7 +101,8 @@ async function build() {
         { name: 'index.html', source: frontendDir, dest: '' },
         { name: 'styles.css', source: frontendDir, dest: '' },
         { name: 'app-frontend.js', source: frontendDir, dest: '' },
-        { name: 'manifest.json', source: projectRoot, dest: '' }
+        { name: 'manifest.json', source: projectRoot, dest: '' },
+        { name: '_redirects', source: projectRoot, dest: '' }
     ];
     
     for (const file of filesToCopy) {

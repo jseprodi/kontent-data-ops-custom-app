@@ -1,0 +1,15 @@
+# Render.com deployment configuration
+services:
+  - type: web
+    name: data-ops-backend
+    env: node
+    buildCommand: npm install && npm run build:ts
+    startCommand: node build/server/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    healthCheckPath: /health
+    plan: starter  # Free tier, upgrade as needed
+

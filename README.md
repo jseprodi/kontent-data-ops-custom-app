@@ -273,6 +273,10 @@ If you see "Command not found" errors:
 ## Documentation
 
 - **[PROJECT_DOCUMENTATION.md](PROJECT_DOCUMENTATION.md)** - Complete project documentation including setup, features, architecture, and development history
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Deployment guide for Netlify and other platforms
+- **[BACKEND_DEPLOYMENT.md](BACKEND_DEPLOYMENT.md)** - Backend deployment guide for Railway, Render, Fly.io
+- **[RAILWAY_SETUP.md](RAILWAY_SETUP.md)** - Railway backend setup and configuration
+- **[NETLIFY_QUICKSTART.md](NETLIFY_QUICKSTART.md)** - Quick start guide for Netlify deployment
 - **[IMPROVEMENTS.md](IMPROVEMENTS.md)** - Summary of all improvements and enhancements made to the project
 - **[CHANGELOG.md](CHANGELOG.md)** - Detailed changelog of all changes
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
