@@ -1,0 +1,42 @@
+{
+  "name": "kontent-ai-data-ops-custom-app",
+  "version": "1.0.0",
+  "description": "GUI for Kontent.ai data-ops command line tool",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "node build.js",
+    "start": "node server.js",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "lint": "echo 'Linting not configured. Consider adding ESLint or Biome.'",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "kontent-ai",
+    "data-ops",
+    "custom-app"
+  ],
+  "author": "Kontent.ai",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jseprodi/kontent-data-ops-custom-app"
+  },
+  "dependencies": {
+    "@kontent-ai/data-ops": "file:./data-ops",
+    "@kontent-ai/custom-app-sdk": "file:./custom-app-sdk-js",
+    "@kontent-ai/management-sdk": "^7.9.1",
+    "execa": "^8.0.1",
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "vitest": "^1.0.0"
+  }
+}

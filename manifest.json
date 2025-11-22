@@ -1,0 +1,16 @@
+{
+  "name": "Data-Ops Tool",
+  "description": "GUI for Kontent.ai data-ops command line tool",
+  "version": "1.0.0",
+  "category": "content",
+  "settings": {
+    "title": "Data-Ops Tool Settings",
+    "properties": []
+  },
+  "routes": [
+    {
+      "path": "/",
+      "component": "index.html"
+    }
+  ]
+}

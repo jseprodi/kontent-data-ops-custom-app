@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data-Ops Custom App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Kontent.ai Data-Ops Tool</h1>
+                    <p class="subtitle">GUI for data-ops command line operations</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-workflows" class="btn btn-secondary" title="Batch Operations & Workflows" aria-label="Open batch operations and workflows">🔄 Workflows</button>
+                    <button id="btn-statistics" class="btn btn-secondary" title="View statistics" aria-label="View command execution statistics">📊 Statistics</button>
+                    <button id="btn-settings" class="btn btn-secondary" title="Settings" aria-label="Open settings panel">⚙️ Settings</button>
+                    <button id="btn-help" class="btn btn-secondary" title="Help & Documentation" aria-label="Open help and documentation">❓ Help</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Skip to main content link for accessibility -->
+        <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
+        
+        <main class="app-main" id="main-content" role="main">
+            <!-- Command Selection Section -->
+            <section class="form-section">
+                <div class="form-group">
+                    <label for="command-select" class="label-with-tooltip">
+                        Command
+                        <span class="tooltip-trigger" data-tooltip="command-tooltip" aria-label="Show command information">ℹ️</span>
+                    </label>
+                    <select id="command-select" class="form-control" aria-label="Select a command" aria-required="true">
+                        <option value="">Select a command...</option>
+                    </select>
+                    <div id="command-tooltip" class="tooltip-content">
+                        <strong>Export:</strong> Export content from Kontent.ai to files<br>
+                        <strong>Import:</strong> Import content from files to Kontent.ai<br>
+                        <strong>Transfer:</strong> Transfer content between environments<br>
+                        <strong>Backup:</strong> Create a backup of your content<br>
+                        <strong>Restore:</strong> Restore content from a backup<br>
+                        <strong>Validate:</strong> Validate content structure and integrity<br>
+                        <strong>Compare:</strong> Compare content between environments<br>
+                        <strong>Migrate:</strong> Migrate content from one structure to another
+                    </div>
+                </div>
+
+                <!-- Environment Configuration -->
+                <div class="environment-config">
+                    <div class="form-group">
+                        <label for="source-env">Source Environment</label>
+                        <div class="environment-input-wrapper">
+                            <select id="source-env" class="form-control" aria-label="Select source environment">
+                                <option value="">Select source environment...</option>
+                            </select>
+                            <button type="button" id="source-env-profile" class="btn-profile" title="Use environment profile" aria-label="Load environment profile for source">👤</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="target-env">Target Environment</label>
+                        <div class="environment-input-wrapper">
+                            <select id="target-env" class="form-control" aria-label="Select target environment">
+                                <option value="">Select target environment...</option>
+                            </select>
+                            <button type="button" id="target-env-profile" class="btn-profile" title="Use environment profile" aria-label="Load environment profile for target">👤</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Environment Profiles Section -->
+                <div id="profiles-section" class="profiles-section" style="display: none;">
+                    <div class="form-group">
+                        <label>Environment Profiles</label>
+                        <div class="profile-controls">
+                            <select id="profile-select" class="form-control">
+                                <option value="">No profile selected</option>
+                            </select>
+                            <button id="save-profile" class="btn btn-secondary" title="Save current environment as profile">💾 Save</button>
+                            <button id="load-profile" class="btn btn-secondary" title="Load selected profile">📂 Load</button>
+                            <button id="delete-profile" class="btn btn-secondary" title="Delete selected profile">🗑️ Delete</button>
+                            <button id="export-profiles" class="btn btn-secondary" title="Export profiles as JSON">📤 Export</button>
+                            <button id="import-profiles" class="btn btn-secondary" title="Import profiles from JSON">📥 Import</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Command-specific Options -->
+                <div id="command-options" class="command-options"></div>
+
+                <!-- Command Templates -->
+                <div id="templates-section" class="templates-section" style="display: none;">
+                    <div class="form-group">
+                        <label for="template-select">Command Template</label>
+                        <div class="template-controls">
+                            <select id="template-select" class="form-control">
+                                <option value="">No template selected</option>
+                            </select>
+                            <button id="save-template" class="btn btn-secondary" title="Save current configuration as template">💾 Save</button>
+                            <button id="load-template" class="btn btn-secondary" title="Load selected template">📂 Load</button>
+                            <button id="delete-template" class="btn btn-secondary" title="Delete selected template">🗑️ Delete</button>
+                            <button id="export-template" class="btn btn-secondary" title="Export template as JSON">📤 Export</button>
+                            <button id="import-template" class="btn btn-secondary" title="Import template from JSON">📥 Import</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons" role="group" aria-label="Command actions">
+                    <button id="run-command" class="btn btn-primary" disabled aria-label="Run the selected command">Run Command</button>
+                    <button id="cancel-command" class="btn btn-warning" style="display: none;" aria-label="Cancel the running command">Cancel</button>
+                    <button id="clear-output" class="btn btn-secondary" aria-label="Clear output">Clear Output</button>
+                    <button id="download-logs" class="btn btn-secondary" aria-label="Download logs as file">Download Logs</button>
+                </div>
+            </section>
+
+            <!-- Output Section -->
+            <section class="output-section">
+                <div class="output-header">
+                    <h2>Output</h2>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button id="copy-output" class="btn-copy" title="Copy output to clipboard" style="display: none;">📋 Copy</button>
+                        <button id="export-output" class="btn-copy" title="Export output as file" style="display: none;">💾 Export</button>
+                        <div class="status-indicator">
+                            <span id="status-icon" class="status-icon">⚪</span>
+                            <span id="status-text">Ready</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Output Controls -->
+                <div id="output-controls" class="output-controls" style="display: none;">
+                    <div class="output-filters">
+                        <input type="text" id="output-search" class="output-search-input" placeholder="Search output..." />
+                        <select id="output-level-filter" class="output-level-filter">
+                            <option value="all">All Levels</option>
+                            <option value="info">Info</option>
+                            <option value="success">Success</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Error</option>
+                        </select>
+                        <label class="output-toggle-label">
+                            <input type="checkbox" id="output-line-numbers" checked />
+                            <span>Line Numbers</span>
+                        </label>
+                        <button id="expand-all-sections" class="btn-clear-filters" title="Expand all sections">⬇️ Expand All</button>
+                        <button id="collapse-all-sections" class="btn-clear-filters" title="Collapse all sections">⬆️ Collapse All</button>
+                        <button id="clear-output-filters" class="btn-clear-filters">Clear Filters</button>
+                    </div>
+                </div>
+                <!-- Progress Indicator -->
+                <div id="progress-container" class="progress-container" style="display: none;">
+                    <div class="progress-bar-wrapper">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                    <div class="progress-info">
+                        <span id="progress-text" class="progress-text">Processing...</span>
+                        <span id="progress-percent" class="progress-percent">0%</span>
+                    </div>
+                </div>
+                <div id="output-container" class="output-container">
+                    <div class="output-placeholder">Output will appear here...</div>
+                </div>
+            </section>
+
+            <!-- Command History Section -->
+            <section class="history-section">
+                <div class="history-header">
+                    <h2>Command History</h2>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="history-search" class="history-search-input" placeholder="Search history..." />
+                        <select id="history-filter" class="history-filter">
+                            <option value="all">All Commands</option>
+                            <option value="environment backup">Environment Backup</option>
+                            <option value="environment restore">Environment Restore</option>
+                            <option value="sync run">Sync Run</option>
+                            <option value="sync diff">Sync Diff</option>
+                        </select>
+                        <button id="clear-history" class="btn btn-secondary">Clear History</button>
+                        <button id="export-history" class="btn btn-secondary">Export</button>
+                        <button id="toggle-history" class="btn-toggle">Hide History</button>
+                    </div>
+                </div>
+                <div id="history-container" class="history-container">
+                    <div class="history-placeholder">Command history will appear here...</div>
+                </div>
+            </section>
+
+            <!-- Logs Section -->
+            <section class="logs-section">
+                <div class="logs-header">
+                    <h2>Logs</h2>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button id="copy-logs" class="btn-copy" title="Copy logs to clipboard">📋 Copy</button>
+                        <button id="toggle-logs" class="btn-toggle">Hide Logs</button>
+                    </div>
+                </div>
+                <div id="logs-container" class="logs-container">
+                    <div class="log-entry log-info">
+                        <span class="log-time">[--:--:--]</span>
+                        <span class="log-level">INFO</span>
+                        <span class="log-message">Application initialized</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Error</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="error-message"></div>
+                <div id="error-solution" class="error-solution"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="error-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Help Modal -->
+    <div id="shortcuts-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Keyboard Shortcuts</h2>
+                <button class="modal-close" data-modal="shortcuts-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="shortcuts-list">
+                    <div class="shortcut-item">
+                        <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                        <span>Run command</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Esc</kbd>
+                        <span>Cancel command / Close modals</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl</kbd> + <kbd>K</kbd>
+                        <span>Focus command selector</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl</kbd> + <kbd>/</kbd>
+                        <span>Show keyboard shortcuts</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Tab</kbd>
+                        <span>Navigate between fields</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-modal="shortcuts-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div id="statistics-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Command Execution Statistics</h2>
+                <button class="modal-close" data-modal="statistics-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="statistics-content" class="statistics-content">
+                    <div class="statistics-loading">Loading statistics...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="refresh-statistics">🔄 Refresh</button>
+                <button class="btn btn-primary" data-modal="statistics-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workflows/Batch Operations Modal -->
+    <div id="workflows-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Batch Operations & Workflows</h2>
+                <button class="modal-close" data-modal="workflows-modal" aria-label="Close workflows modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="workflows-container">
+                    <div class="workflows-sidebar">
+                        <h3>Workflows</h3>
+                        <div class="workflow-list">
+                            <button id="new-workflow" class="btn btn-primary btn-sm">+ New Workflow</button>
+                            <div id="workflow-list-container" class="workflow-list-container"></div>
+                        </div>
+                        <div class="workflow-templates">
+                            <h4>Templates</h4>
+                            <select id="workflow-template-select" class="form-control">
+                                <option value="">Select a template...</option>
+                                <option value="backup-sync">Backup → Sync</option>
+                                <option value="backup-restore">Backup → Restore</option>
+                                <option value="sync-diff">Sync → Diff</option>
+                            </select>
+                            <button id="load-workflow-template" class="btn btn-secondary btn-sm">Load Template</button>
+                        </div>
+                    </div>
+                    <div class="workflows-main">
+                        <div id="workflow-editor" class="workflow-editor" style="display: none;">
+                            <div class="workflow-header">
+                                <input type="text" id="workflow-name" class="workflow-name-input" placeholder="Workflow name..." aria-label="Workflow name" />
+                                <div class="workflow-actions">
+                                    <button id="save-workflow" class="btn btn-secondary btn-sm">💾 Save</button>
+                                    <button id="delete-workflow" class="btn btn-secondary btn-sm">🗑️ Delete</button>
+                                    <button id="export-workflow" class="btn btn-secondary btn-sm">📤 Export</button>
+                                </div>
+                            </div>
+                            <div class="workflow-settings">
+                                <label class="workflow-setting">
+                                    <input type="checkbox" id="workflow-stop-on-error" checked />
+                                    <span>Stop on error</span>
+                                </label>
+                                <label class="workflow-setting">
+                                    <input type="radio" name="workflow-execution" value="sequential" checked />
+                                    <span>Sequential</span>
+                                </label>
+                                <label class="workflow-setting">
+                                    <input type="radio" name="workflow-execution" value="parallel" />
+                                    <span>Parallel</span>
+                                </label>
+                            </div>
+                            <div class="workflow-steps">
+                                <h4>Steps</h4>
+                                <div id="workflow-steps-container" class="workflow-steps-container"></div>
+                                <button id="add-workflow-step" class="btn btn-secondary btn-sm">+ Add Step</button>
+                            </div>
+                        </div>
+                        <div id="workflow-empty" class="workflow-empty">
+                            <p>Select a workflow or create a new one to get started.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="run-workflow" class="btn btn-primary" disabled aria-label="Run workflow">▶️ Run Workflow</button>
+                <button class="btn btn-secondary" data-modal="workflows-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help & Documentation Modal -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Help & Documentation</h2>
+                <button class="modal-close" data-modal="help-modal" aria-label="Close help modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-container">
+                    <div class="help-sidebar">
+                        <nav class="help-nav" role="navigation" aria-label="Help navigation">
+                            <button class="help-nav-item active" data-help-section="overview" aria-label="Overview">📖 Overview</button>
+                            <button class="help-nav-item" data-help-section="commands" aria-label="Commands">⚡ Commands</button>
+                            <button class="help-nav-item" data-help-section="workflows" aria-label="Workflows">🔄 Workflows</button>
+                            <button class="help-nav-item" data-help-section="troubleshooting" aria-label="Troubleshooting">🔧 Troubleshooting</button>
+                            <button class="help-nav-item" data-help-section="faq" aria-label="FAQ">❓ FAQ</button>
+                            <button class="help-nav-item" data-help-section="keyboard" aria-label="Keyboard Shortcuts">⌨️ Keyboard Shortcuts</button>
+                        </nav>
+                    </div>
+                    <div class="help-content">
+                        <div id="help-overview" class="help-section active">
+                            <h2>Overview</h2>
+                            <p>The Kontent.ai Data-Ops Custom App provides a user-friendly interface for running data-ops commands. This app serves as a graphical wrapper around the Kontent.ai data-ops command-line tool.</p>
+                            <h3>Key Features</h3>
+                            <ul>
+                                <li><strong>Command Selection:</strong> Choose from all available data-ops commands</li>
+                                <li><strong>Environment Management:</strong> Select source and target environments</li>
+                                <li><strong>Real-time Output:</strong> View command execution output in real-time</li>
+                                <li><strong>Batch Operations:</strong> Run multiple commands in sequence or parallel</li>
+                                <li><strong>Workflows:</strong> Create reusable command sequences</li>
+                                <li><strong>History & Statistics:</strong> Track command execution history and statistics</li>
+                            </ul>
+                        </div>
+                        <div id="help-commands" class="help-section" style="display: none;">
+                            <h2>Commands</h2>
+                            <div id="help-commands-content"></div>
+                        </div>
+                        <div id="help-workflows" class="help-section" style="display: none;">
+                            <h2>Workflows</h2>
+                            <p>Workflows allow you to run multiple commands in sequence or parallel, making it easy to automate complex operations.</p>
+                            <h3>Creating a Workflow</h3>
+                            <ol>
+                                <li>Click the "Workflows" button in the header</li>
+                                <li>Click "New Workflow" to create a new workflow</li>
+                                <li>Enter a name for your workflow</li>
+                                <li>Add steps by clicking "+ Add Step"</li>
+                                <li>Configure each step with a command and its options</li>
+                                <li>Choose execution mode: Sequential or Parallel</li>
+                                <li>Save the workflow</li>
+                            </ol>
+                            <h3>Running a Workflow</h3>
+                            <p>Click "Run Workflow" to execute all steps. If "Stop on error" is enabled, the workflow will stop if any step fails.</p>
+                            <h3>Workflow Templates</h3>
+                            <p>Use pre-built templates to quickly create common workflows like "Backup → Sync" or "Backup → Restore".</p>
+                        </div>
+                        <div id="help-troubleshooting" class="help-section" style="display: none;">
+                            <h2>Troubleshooting</h2>
+                            <h3>Common Issues</h3>
+                            <div class="help-issue">
+                                <h4>Command Not Found</h4>
+                                <p>If you see "Command not found" errors:</p>
+                                <ul>
+                                    <li>Ensure the data-ops CLI is installed: <code>npm install -g @kontent-ai/data-ops</code></li>
+                                    <li>Check that the CLI is in your PATH</li>
+                                    <li>Verify the server can access the CLI</li>
+                                </ul>
+                            </div>
+                            <div class="help-issue">
+                                <h4>API Key Errors</h4>
+                                <p>If you encounter API key authentication errors:</p>
+                                <ul>
+                                    <li>Verify your Management API key is correct</li>
+                                    <li>Check that the API key has the required permissions</li>
+                                    <li>Ensure the environment ID matches the API key</li>
+                                </ul>
+                            </div>
+                            <div class="help-issue">
+                                <h4>Connection Issues</h4>
+                                <p>If commands fail to connect:</p>
+                                <ul>
+                                    <li>Check your internet connection</li>
+                                    <li>Verify the Kontent.ai service is accessible</li>
+                                    <li>Check firewall settings</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="help-faq" class="help-section" style="display: none;">
+                            <h2>Frequently Asked Questions</h2>
+                            <div class="help-faq-item">
+                                <h4>Q: Can I run multiple commands at once?</h4>
+                                <p>A: Yes! Use the Workflows feature to create sequences of commands that run automatically.</p>
+                            </div>
+                            <div class="help-faq-item">
+                                <h4>Q: How do I save my command configurations?</h4>
+                                <p>A: Use Command Templates to save frequently used configurations. You can also save Environment Profiles for quick environment switching.</p>
+                            </div>
+                            <div class="help-faq-item">
+                                <h4>Q: Can I undo a command?</h4>
+                                <p>A: Some commands support rollback. Check the command documentation for details. Always test in non-production environments first.</p>
+                            </div>
+                            <div class="help-faq-item">
+                                <h4>Q: How long is command history kept?</h4>
+                                <p>A: By default, up to 100 command executions are kept. You can adjust this in Settings.</p>
+                            </div>
+                            <div class="help-faq-item">
+                                <h4>Q: Can I export my data?</h4>
+                                <p>A: Yes! You can export command history, templates, profiles, and all app data from the Settings panel.</p>
+                            </div>
+                        </div>
+                        <div id="help-keyboard" class="help-section" style="display: none;">
+                            <h2>Keyboard Shortcuts</h2>
+                            <div class="help-shortcuts">
+                                <div class="help-shortcut-item">
+                                    <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                                    <span>Run command</span>
+                                </div>
+                                <div class="help-shortcut-item">
+                                    <kbd>Esc</kbd>
+                                    <span>Cancel command / Close modals</span>
+                                </div>
+                                <div class="help-shortcut-item">
+                                    <kbd>Ctrl</kbd> + <kbd>K</kbd>
+                                    <span>Focus command selector</span>
+                                </div>
+                                <div class="help-shortcut-item">
+                                    <kbd>Ctrl</kbd> + <kbd>/</kbd>
+                                    <span>Show keyboard shortcuts</span>
+                                </div>
+                                <div class="help-shortcut-item">
+                                    <kbd>Tab</kbd>
+                                    <span>Navigate between fields</span>
+                                </div>
+                                <div class="help-shortcut-item">
+                                    <kbd>Shift</kbd> + <kbd>Tab</kbd>
+                                    <span>Navigate backwards</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-modal="help-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Settings & Preferences</h2>
+                <button class="modal-close" data-modal="settings-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="settings-content" class="settings-content">
+                    <div class="settings-section">
+                        <h3>General Settings</h3>
+                        <div class="settings-group">
+                            <label class="settings-label">
+                                <input type="checkbox" id="setting-auto-save" />
+                                <span>Auto-save form state</span>
+                            </label>
+                            <label class="settings-label">
+                                <input type="checkbox" id="setting-show-line-numbers" checked />
+                                <span>Show line numbers in output (default)</span>
+                            </label>
+                            <label class="settings-label">
+                                <input type="checkbox" id="setting-notifications" />
+                                <span>Enable browser notifications for command completion</span>
+                            </label>
+                            <label class="settings-label">
+                                <input type="checkbox" id="setting-sound-alerts" />
+                                <span>Play sound alerts for command completion</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>History & Storage</h3>
+                        <div class="settings-group">
+                            <label class="settings-label">
+                                Maximum history entries:
+                                <input type="number" id="setting-max-history" min="10" max="1000" value="100" class="settings-input" />
+                            </label>
+                            <label class="settings-label">
+                                Entity cache expiration (hours):
+                                <input type="number" id="setting-cache-expiry" min="1" max="168" value="1" class="settings-input" />
+                            </label>
+                            <div class="settings-actions">
+                                <button class="btn btn-secondary" id="clear-all-data">Clear All Data</button>
+                                <button class="btn btn-secondary" id="export-all-data">Export All Data</button>
+                                <button class="btn btn-secondary" id="import-all-data">Import All Data</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Appearance</h3>
+                        <div class="settings-group">
+                            <label class="settings-label">
+                                Theme:
+                                <select id="setting-theme" class="settings-input">
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                    <option value="auto">Auto (System)</option>
+                                </select>
+                            </label>
+                            <label class="settings-label">
+                                Font size:
+                                <select id="setting-font-size" class="settings-input">
+                                    <option value="small">Small</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>About</h3>
+                        <div class="settings-group">
+                            <p><strong>Version:</strong> 1.0.0</p>
+                            <p><strong>Data-Ops CLI:</strong> Using local build</p>
+                            <p><strong>Storage Used:</strong> <span id="storage-used">Calculating...</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="reset-settings">Reset to Defaults</button>
+                <button class="btn btn-primary" id="save-settings">Save Settings</button>
+                <button class="btn btn-secondary" data-modal="settings-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script type="module" src="app-frontend.js"></script>
+</body>
+</html>
