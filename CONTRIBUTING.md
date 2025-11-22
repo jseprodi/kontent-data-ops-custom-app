@@ -34,10 +34,17 @@ This will create a `dist/` directory with all the necessary files.
 
 ## Project Structure
 
-- `index.html` - Main HTML file
-- `styles.css` - Application styles
-- `app-frontend.js` - Frontend application logic
-- `server.js` - Backend server for executing data-ops commands
+- `frontend/` - Frontend application files
+  - `index.html` - Main HTML file
+  - `styles.css` - Application styles
+  - `app-frontend.js` - Frontend application logic
+- `src/` - TypeScript source code
+  - `server/` - Server source files (TypeScript)
+  - `types/` - TypeScript type definitions
+- `scripts/` - Build and utility scripts
+  - `build.js` - Build script with minification
+  - `server.js` - Backend server for executing data-ops commands (JavaScript)
+- `tests/` - Test files
 - `manifest.json` - Kontent.ai custom app manifest
 - `package.json` - Node.js dependencies and scripts
 

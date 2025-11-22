@@ -120,6 +120,7 @@ The test file includes example test cases for:
   - Input validation
   - Storage utilities
   - Error handling
+- ✅ **Note**: Utilities were later integrated directly into `app-frontend.js` and the `src/utils/` directory was removed to simplify the project structure.
 
 ### 2. Performance Optimizations
 - ✅ Debounce and throttle utilities
@@ -137,7 +138,7 @@ The test file includes example test cases for:
 
 ### 4. Documentation
 - ✅ JSDoc standards document (`JSDOC.md`)
-- ✅ Source code organization guide (`src/README.md`)
+- ✅ Source code organization guide (`src/README.md`) - *Removed after utilities integration*
 - ✅ Utility module documentation
 
 ### 5. Utility Modules Created

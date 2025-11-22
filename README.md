@@ -247,17 +247,21 @@ If you see "Command not found" errors:
 
 ```
 .
-├── index.html              # Main HTML file
-├── styles.css              # Application styles
-├── app-frontend.js         # Frontend application logic (~5,100 lines)
-├── server.js               # Backend server for executing commands
-├── manifest.json           # Kontent.ai custom app manifest
-├── package.json            # Node.js dependencies and scripts
-├── build.js                # Build script with minification
+├── frontend/               # Frontend application files
+│   ├── index.html          # Main HTML file
+│   ├── styles.css          # Application styles
+│   └── app-frontend.js     # Frontend application logic (~5,100 lines)
+├── src/                    # TypeScript source code
+│   ├── server/             # Server source files (TypeScript)
+│   └── types/              # TypeScript type definitions
+├── scripts/                # Build and utility scripts
+│   ├── build.js            # Build script with minification
+│   └── server.js           # Backend server for executing commands (JavaScript)
 ├── tests/                  # Test files
 │   └── server.test.js      # Integration and unit tests
-├── src/                    # Source utilities (reference)
-│   └── utils/              # Utility modules (integrated into app-frontend.js)
+├── manifest.json           # Kontent.ai custom app manifest
+├── package.json            # Node.js dependencies and scripts
+├── tsconfig.json           # TypeScript configuration
 ├── README.md               # This file
 ├── PROJECT_DOCUMENTATION.md # Complete project documentation
 ├── IMPROVEMENTS.md         # Improvements summary

@@ -74,6 +74,7 @@ All notable changes to this project will be documented in this file.
   - Input validation (`validation.js`)
   - Storage utilities (`storage.js`)
   - Error handling (`errors.js`)
+  - *Note: These utilities were later integrated into `app-frontend.js` and the directory was removed.*
 
 - **CI/CD**
   - GitHub Actions workflow for automated testing

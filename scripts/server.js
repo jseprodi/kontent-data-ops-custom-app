@@ -8,6 +8,8 @@ import { ManagementClient } from '@kontent-ai/management-sdk';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const PROJECT_ROOT = path.resolve(__dirname, '..');
+const FRONTEND_DIR = path.join(PROJECT_ROOT, 'frontend');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,11 +29,11 @@ app.use(express.json());
 // Serve static files only in development
 // In production, custom apps are served by Kontent.ai
 if (process.env.NODE_ENV !== 'production') {
-    app.use(express.static(__dirname));
+    app.use(express.static(FRONTEND_DIR));
 }
 
 // Data-Ops CLI path - use the built version from local repo
-const DATA_OPS_CLI = process.env.DATA_OPS_CLI_PATH || path.join(__dirname, 'data-ops', 'build', 'src', 'index.js');
+const DATA_OPS_CLI = process.env.DATA_OPS_CLI_PATH || path.join(PROJECT_ROOT, 'data-ops', 'build', 'src', 'index.js');
 
 // Logger for server-side logging
 class ServerLogger {
@@ -259,7 +261,7 @@ async function executeDataOpsCommand(command, options) {
         const childProcess = execa('node', [DATA_OPS_CLI, ...args], {
             stdio: ['pipe', 'pipe', 'pipe'],
             encoding: 'utf8',
-            cwd: __dirname, // Run from project root
+            cwd: PROJECT_ROOT, // Run from project root
             timeout: 3600000, // 1 hour timeout for long-running operations
             killSignal: 'SIGTERM'
         });
@@ -750,7 +752,7 @@ app.use((req, res) => {
 if (process.env.NODE_ENV !== 'production') {
     app.get('/', (req, res) => {
         try {
-            res.sendFile(path.join(__dirname, 'index.html'));
+            res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
         } catch (error) {
             logger.error('Failed to serve index.html', error);
             res.status(500).json({ error: 'Failed to serve application' });

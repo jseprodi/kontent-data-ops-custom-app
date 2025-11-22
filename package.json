@@ -5,9 +5,13 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node server.js",
-    "build": "node build.js",
-    "start": "node server.js",
+    "dev": "npm run build:ts && node build/server/index.js",
+    "dev:js": "node scripts/server.js",
+    "build": "npm run build:ts && node scripts/build.js",
+    "build:ts": "tsc",
+    "build:watch": "tsc --watch",
+    "start": "node build/server/index.js",
+    "start:js": "node scripts/server.js",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "lint": "echo 'Linting not configured. Consider adding ESLint or Biome.'",
@@ -28,15 +32,20 @@
     "url": "https://github.com/jseprodi/kontent-data-ops-custom-app"
   },
   "dependencies": {
-    "@kontent-ai/data-ops": "file:./data-ops",
     "@kontent-ai/custom-app-sdk": "file:./custom-app-sdk-js",
+    "@kontent-ai/data-ops": "file:./data-ops",
     "@kontent-ai/management-sdk": "^7.9.1",
+    "cors": "^2.8.5",
     "execa": "^8.0.1",
-    "express": "^4.18.2",
-    "cors": "^2.8.5"
+    "express": "^4.18.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
     "@types/node": "^20.0.0",
+    "source-map": "^0.7.6",
+    "terser": "^5.44.1",
+    "typescript": "^5.9.3",
     "vitest": "^1.0.0"
   }
 }
