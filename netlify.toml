@@ -40,13 +40,7 @@
   [headers.values]
     Content-Type = "text/css; charset=utf-8"
 
-# Netlify Functions configuration
-[functions]
-  # Node runtime version
-  node_bundler = "esbuild"
-  # Timeout for functions (max 26 seconds on paid plans)
-  timeout = 26
-
-# Note: The backend API endpoints need to be converted to Netlify Functions
-# or deployed separately. See DEPLOYMENT.md for details.
+# Note: Netlify Functions are not used in this deployment.
+# The backend API is deployed separately on Railway.
+# See DEPLOYMENT.md and BACKEND_DEPLOYMENT.md for details.
 
