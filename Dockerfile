@@ -10,16 +10,17 @@ RUN apk add --no-cache python3 make g++
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-# Note: This will fail if data-ops and custom-app-sdk-js are not available
-# You may need to publish these as npm packages or use a different approach
-RUN npm ci --only=production
+# Install all dependencies (including devDependencies for TypeScript build)
+RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Build TypeScript
+# Build TypeScript (requires devDependencies)
 RUN npm run build:ts
+
+# Remove devDependencies to reduce image size
+RUN npm prune --production
 
 # Expose port
 EXPOSE 3000
