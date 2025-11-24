@@ -1,0 +1,7 @@
+[submodule "custom-app-sdk-js"]
+	path = custom-app-sdk-js
+	url = https://github.com/kontent-ai/custom-app-sdk-js.git
+[submodule "data-ops"]
+	path = data-ops
+	url = https://github.com/kontent-ai/data-ops.git
+

@@ -2,7 +2,9 @@
 
 [build]
   # Build command - builds the frontend and prepares for deployment
-  command = "npm run build"
+  # Uses simplified build script that doesn't require TypeScript compilation or npm dependencies
+  # Submodules are checked out automatically by Netlify (defined in .gitmodules)
+  command = "node scripts/build-netlify.js"
   # Publish directory - Netlify will serve files from here
   publish = "dist"
 
