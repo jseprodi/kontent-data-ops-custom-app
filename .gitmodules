@@ -4,4 +4,7 @@
 [submodule "data-ops"]
 	path = data-ops
 	url = https://github.com/kontent-ai/data-ops.git
+[submodule "stylesheet-generator"]
+	path = stylesheet-generator
+	url = https://github.com/kontent-ai/stylekit.git
 
