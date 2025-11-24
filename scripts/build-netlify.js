@@ -4,7 +4,9 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { minify } from 'terser';
+
+// Terser will be imported dynamically if available
+let terserModule = null;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,8 +20,21 @@ function formatFileSize(bytes) {
 
 // Minify JavaScript with source maps
 async function minifyJS(content, sourcePath, outputPath, generateSourceMap = true) {
+    // Try to import terser if not already imported
+    if (!terserModule) {
+        try {
+            terserModule = await import('terser');
+        } catch (error) {
+            console.warn('⚠️  terser not available, skipping minification');
+            return {
+                code: content,
+                map: null
+            };
+        }
+    }
+    
     try {
-        const result = await minify(content, {
+        const result = await terserModule.minify(content, {
             compress: {
                 drop_console: false,
                 drop_debugger: true,

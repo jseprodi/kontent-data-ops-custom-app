@@ -10,8 +10,8 @@
   publish = "dist"
 
 [build.environment]
-  # Node version
-  NODE_VERSION = "18"
+  # Node version (upgraded to 20 to match dependency requirements)
+  NODE_VERSION = "20"
   # Build environment
   NODE_ENV = "production"
 

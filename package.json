@@ -15,8 +15,7 @@
     "start:backend": "npm run build:ts && node build/server/index.js",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "lint": "echo 'Linting not configured. Consider adding ESLint or Biome.'",
-    "prepare": "npm run build"
+    "lint": "echo 'Linting not configured. Consider adding ESLint or Biome.'"
   },
   "keywords": [
     "kontent-ai",
